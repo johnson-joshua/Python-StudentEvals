@@ -66,19 +66,19 @@ def addToArray(qNum, answer, numResponses):
     
     values = []
     #values = numpy.zeros
-    if answer == 'Strongly Agree' or answer == 'Very Satisfied':
+    if answer == 'Strongly Agree' or answer == 'Very Satisfied' or row['Answer'] == 'A':
         intAnswer = 1
         answer = 'Strongly Agree' 
-    elif answer == 'Agree' or answer == 'Satisfied':
+    elif answer == 'Agree' or answer == 'Satisfied' or row['Answer'] == 'B':
         intAnswer = 2
         answer = 'Agree'
-    elif answer == 'Disagree' or answer == 'Dissatisfied':
+    elif answer == 'Disagree' or answer == 'Dissatisfied' or row['Answer'] == 'C':
         intAnswer = 3
         answer = 'Disagree'
-    elif answer == 'Strongly Disagree' or answer == 'Very Dissatisfied':
+    elif answer == 'Strongly Disagree' or answer == 'Very Dissatisfied' or row['Answer'] == 'D':
         intAnswer = 4
         answer = 'Strongly Disagree'
-    elif answer == 'Not Applicable':
+    elif answer == 'Not Applicable' or row['Answer'] == 'F':
         intAnswer = 5
         answer = 'Not Applicable'
     for response in range(int(numResponses)):
@@ -199,19 +199,19 @@ def addToArray(qNum, answer, numResponses):
 for index, row in df.iterrows():
     if(row['Q #'] < 38):
         #print(row['Q #'])
-        if(row['Answer'] == 'Strongly Agree' or row['Answer'] == 'Very Satisfied'):
+        if(row['Answer'] == 'Strongly Agree' or row['Answer'] == 'Very Satisfied' or row['Answer'] == 'A'):
             sa = row['# Responses']
             addToArray(row['Q #'], row['Answer'], sa)
-        elif(row['Answer'] == 'Agree' or row['Answer'] == 'Satisfied'):
+        elif(row['Answer'] == 'Agree' or row['Answer'] == 'Satisfied' or row['Answer'] == 'B'):
             a = row['# Responses']
             addToArray(row['Q #'], row['Answer'], a)
-        elif(row['Answer'] == 'Disagree' or row['Answer'] == 'Dissatisfied'):
+        elif(row['Answer'] == 'Disagree' or row['Answer'] == 'Dissatisfied' or row['Answer'] == 'C'):
             d = row['# Responses']
             addToArray(row['Q #'], row['Answer'], d)
-        elif(row['Answer'] == 'Strongly Disagree' or row['Answer'] == 'Very Dissatisfied'):
+        elif(row['Answer'] == 'Strongly Disagree' or row['Answer'] == 'Very Dissatisfied' or row['Answer'] == 'D'):
             sd = row['# Responses']
             addToArray(row['Q #'], row['Answer'], sd)
-        elif(row['Answer'] == 'Not Applicable'):
+        elif(row['Answer'] == 'Not Applicable' or row['Answer'] == 'F'):
             na = row['# Responses']
             addToArray(row['Q #'], row['Answer'], na)
         resp = row['# Responses']
@@ -222,7 +222,22 @@ for index, row in df.iterrows():
             
 numStudents = totalResp/37                                   
 
-#print(myList1)
 df3 = pd.DataFrame(columns=["a", "b","c","faculty code","semester", "name", "division","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37"])
-df3 = pd.DataFrame([myList1, myList2, myList3, myList4, myList5,myList6, myList7, myList8, myList9, myList10,myList11, myList12, myList13, myList14, myList15,myList16, myList17, myList18, myList19, myList20,myList21, myList22, myList23, myList24, myList25,myList26, myList27, myList28, myList29, myList30,myList31, myList32, myList33, myList34, myList35,myList36, myList37])
+dictList = [myList1, myList2, myList3, myList4, myList5,myList6, myList7, myList8, myList9, myList10,myList11, myList12, myList13, myList14, myList15,myList16, myList17, myList18, myList19, myList20,myList21, myList22, myList23, myList24, myList25,myList26, myList27, myList28, myList29, myList30,myList31, myList32, myList33, myList34, myList35,myList36, myList37]
+for curList in dictList:
+    #print(curList)
+    if curList != {}:
+        sa = curList['Strongly Agree']
+        a = curList['Agree']
+        d = curList['Disagree']
+        sd = curList['Strongly Disagree']
+        na = curList['Not Applicable']
+        print(sa)
+        print(a)
+        print(d)
+        print(sd)
+        print(na)
+
+#print(myList1)
+#df3 = pd.DataFrame([myList1, myList2, myList3, myList4, myList5,myList6, myList7, myList8, myList9, myList10,myList11, myList12, myList13, myList14, myList15,myList16, myList17, myList18, myList19, myList20,myList21, myList22, myList23, myList24, myList25,myList26, myList27, myList28, myList29, myList30,myList31, myList32, myList33, myList34, myList35,myList36, myList37])
 df3.to_excel(writer, sheet_name='Sheet1')
