@@ -59,6 +59,15 @@ myList35 = {}
 myList36 = {}
 myList37 = {}
 
+#Makes a list for each response
+def makeArrays(numResponses):
+    count = numResponses
+    #for res in numResponses:
+    while count > 0:
+        command = ("'Response'+str(count) = []")
+        exec(command)
+        count+=1
+
 def addToArray(qNum, answer, numResponses):
     print('qNum = ' +str(int(qNum)))
     #print('Ans = ' +str(answer))
@@ -196,6 +205,17 @@ def addToArray(qNum, answer, numResponses):
         myList37[answer] = values
         print(myList37)
     
+#Get the number of responses
+for index, row in df.iterrows():
+    if(row['Q #'] < 38):
+           resp = row['# Responses']
+           if numpy.isnan(resp):
+               break
+           else:
+               totalResp += resp
+numStudents = totalResp/37
+makeArrays(int(numStudents))
+    
 for index, row in df.iterrows():
     if(row['Q #'] < 38):
         #print(row['Q #'])
@@ -239,5 +259,5 @@ for curList in dictList:
         print(na)
 
 #print(myList1)
-#df3 = pd.DataFrame([myList1, myList2, myList3, myList4, myList5,myList6, myList7, myList8, myList9, myList10,myList11, myList12, myList13, myList14, myList15,myList16, myList17, myList18, myList19, myList20,myList21, myList22, myList23, myList24, myList25,myList26, myList27, myList28, myList29, myList30,myList31, myList32, myList33, myList34, myList35,myList36, myList37])
+df3 = pd.DataFrame.from_dict([myList1, myList2, myList3, myList4, myList5,myList6, myList7, myList8, myList9, myList10,myList11, myList12, myList13, myList14, myList15,myList16, myList17, myList18, myList19, myList20,myList21, myList22, myList23, myList24, myList25,myList26, myList27, myList28, myList29, myList30,myList31, myList32, myList33, myList34, myList35,myList36, myList37]).transpose()
 df3.to_excel(writer, sheet_name='Sheet1')
