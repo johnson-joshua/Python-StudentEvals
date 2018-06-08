@@ -30,8 +30,6 @@ def makeArrays(numResponses):
     for response in range(int(numResponses)):
         responses['resp'+str(count)] = []
         count+=1
-    #print("Responses")
-    #print(responses)
         
 #Example: addToArray(1, 'Strongly Agree', 4)
 def addToArray(qNum, sa, a, d, sd, na):
@@ -43,21 +41,6 @@ def addToArray(qNum, sa, a, d, sd, na):
     #print("d=" +str(d))
     #print("sd=" +str(sd))
     #print("na=" +str(na))
-#    if answer == 'Strongly Agree' or answer == 'Very Satisfied' or row['Answer'] == 'A':
-#        intAnswer = 1
-#        answer = 'Strongly Agree' 
-#    elif answer == 'Agree' or answer == 'Satisfied' or row['Answer'] == 'B':
-#        intAnswer = 2
-#        answer = 'Agree'
-#    elif answer == 'Disagree' or answer == 'Dissatisfied' or row['Answer'] == 'C':
-#        intAnswer = 3
-#        answer = 'Disagree'
-#    elif answer == 'Strongly Disagree' or answer == 'Very Dissatisfied' or row['Answer'] == 'D':
-#        intAnswer = 4
-#        answer = 'Strongly Disagree'
-#    elif answer == 'Not Applicable' or row['Answer'] == 'F':
-#        intAnswer = 5
-#        answer = 'Not Applicable'
     count = int(1)
     for response in range(int(sa)):
         responses['resp'+str(count)].append(int(1))
@@ -74,12 +57,6 @@ def addToArray(qNum, sa, a, d, sd, na):
     for response in range(int(na)):
         responses['resp'+str(count)].append(int(5))
         count+=1
-        #responeses['resp'+str(count)].append(int(2))
-    #print(responses)
-        
-        
-        
-        
         
 for index, row in df.iterrows():
     if(row['Q #'] < 38):
@@ -93,23 +70,32 @@ makeArrays(int(numStudents))
 
 for index, row in df.iterrows():
     if(row['Q #'] < 38):
-        #print(row['Q #'])
         if(row['Answer'] == 'Strongly Agree' or row['Answer'] == 'Very Satisfied' or row['Answer'] == 'A'):
             sa = row['# Responses']
-            #addToArray(row['Q #'], row['Answer'], sa)
         elif(row['Answer'] == 'Agree' or row['Answer'] == 'Satisfied' or row['Answer'] == 'B'):
             a = row['# Responses']
-            #addToArray(row['Q #'], row['Answer'], a)
         elif(row['Answer'] == 'Disagree' or row['Answer'] == 'Dissatisfied' or row['Answer'] == 'C'):
             d = row['# Responses']
-            #addToArray(row['Q #'], row['Answer'], d)
         elif(row['Answer'] == 'Strongly Disagree' or row['Answer'] == 'Very Dissatisfied' or row['Answer'] == 'D'):
             sd = row['# Responses']
-            #addToArray(row['Q #'], row['Answer'], sd)
         elif(row['Answer'] == 'Not Applicable' or row['Answer'] == 'F'):
             na = row['# Responses']
-            #addToArray(row['Q #'], row['Answer'], na)
             addToArray(row['Q #'], sa, a, d, sd, na)
  
 print("Responses Final:")                  
 print(responses)
+
+dfExport = pd.DataFrame.from_dict(responses, orient='index')
+dfExport.to_excel(writer, sheet_name="Sheet1")
+writer.save()
+
+
+
+
+
+
+
+
+
+
+
