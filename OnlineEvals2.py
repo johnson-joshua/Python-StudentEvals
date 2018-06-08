@@ -7,8 +7,24 @@ Created on Fri Jun  8 10:22:17 2018
 
 import pandas as pd;
 import numpy as numpy;
+import os;
+path = os.path.expanduser("~/Documents/PythonConverterFolder")
+files = os.listdir(path)
 
-FILE_PATH = "E:\\Stuff\\PythonTest\\BIO-100-H23 - Introductory Biology 12341.201710 - Fall 2017.xlsx";
+#Excel files to convert with this program must be in Documents folder in a folder called "PythonConverterFolder"
+for file in files:
+    fullName = file.split("-")
+    className = fullName[0]
+    classNum = fullName[1]
+    section = fullName[2]
+    print(className, classNum, section)
+FILE_PATH = path+ "/" +file
+
+
+
+
+
+#FILE_PATH = "E:\\Stuff\\PythonTest\\BIO-100-H23 - Introductory Biology 12341.201710 - Fall 2017.xlsx";
 xl = pd.ExcelFile(FILE_PATH);
 writer = pd.ExcelWriter('testing.xlsx', engine='xlsxwriter')
 df = xl.parse('Summary Report');
@@ -33,14 +49,6 @@ def makeArrays(numResponses):
         
 #Example: addToArray(1, 'Strongly Agree', 4)
 def addToArray(qNum, sa, a, d, sd, na):
-    #print('qNum = ' +str(int(qNum)))
-    #print('Ans = ' +str(answer))
-    #print('NumResp = ' +str(numResponses))
-    #print("sa=" +str(sa))
-    #print("a=" +str(a))
-    #print("d=" +str(d))
-    #print("sd=" +str(sd))
-    #print("na=" +str(na))
     count = int(1)
     for response in range(int(sa)):
         responses['resp'+str(count)].append(int(1))
