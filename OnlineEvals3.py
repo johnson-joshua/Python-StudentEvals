@@ -13,13 +13,17 @@ writer = pd.ExcelWriter('testing.xlsx', engine='xlsxwriter')
 path = os.path.expanduser("~/Documents/PythonConverterFolder")
 dfExport = pd.DataFrame()
 files = os.listdir(path)
-#Excel files to convert with this program must be in Documents folder in a folder called "PythonConverterFolder"
+
+#================================================================================================================
+#Excel files to convert with this program MUST be in Documents folder in a folder called "PythonConverterFolder"
+#================================================================================================================
+
 for file in files:
     fullName = file.split("-")
-    className = fullName[0]
+    subject = fullName[0]
     classNum = fullName[1]
     section = fullName[2]
-    print(className, classNum, section)
+    print(subject, classNum, section)
     FILE_PATH = path+ "/" +file
     xl = pd.ExcelFile(FILE_PATH);
     df = xl.parse('Summary Report');
@@ -39,10 +43,10 @@ for file in files:
     def makeArrays(numResponses):
         count = int(1)
         for response in range(int(numResponses)):
-            responses['resp'+str(count)] = []
+            responses['resp'+str(count)] = [subject,classNum,section] #adds class data to the first 3 columns of each list
             count+=1
-            
-    #Example: addToArray(1, 'Strongly Agree', 4)
+    
+    
     def addToArray(qNum, sa, a, d, sd, na):
         count = int(1)
         for response in range(int(sa)):
@@ -60,22 +64,24 @@ for file in files:
         for response in range(int(na)):
             responses['resp'+str(count)].append(int(5))
             count+=1
-            
+    
+    #The logic for finding the number of responses in a given file. Add up responses for questions 1-37 and divide by 37
+    #TODO: Change the logic to loop through Question 1 and get the number of responses. Question 1 will be required within D2L
     for index, row in df.iterrows():
         if(row['Q #'] < 38):
-               #print(row['Q #'])
                curResp = row['# Responses']
                if numpy.isnan(curResp):
                    break
                else:
                    totalResp += curResp
     numStudents = totalResp/37
-#    print(str(numStudents))
     makeArrays(int(numStudents))
     
+    #Iterates through the original Excel report from D2L. Loops through questions 1-37 and stores the number of responses for strongly agree, agree, etc.
+    #Once the loops hits the 'Not Applicable' number of responses, it calls the method to add the data for that question into a list
+    #TODO: Loop through the rest of spreadsheet (38 - END) and store comments in their own worksheet
     for index, row in df.iterrows():
         if(row['Q #'] < 38):
-            #print(row['Q #'])
             if(row['Answer'] == 'Strongly Agree' or row['Answer'] == 'Very Satisfied' or row['Answer'] == 'A'):
                 sa = row['# Responses']
             elif(row['Answer'] == 'Agree' or row['Answer'] == 'Satisfied' or row['Answer'] == 'B'):
@@ -86,14 +92,12 @@ for file in files:
                 sd = row['# Responses']
             elif(row['Answer'] == 'Not Applicable' or row['Answer'] == 'F'):
                 na = row['# Responses']
+                #AddToArray is called once per question (1-37)
                 addToArray(row['Q #'], sa, a, d, sd, na)
-     
-#    print("Responses Final:")                  
-#    print(responses)
     
     dfTemp = pd.DataFrame.from_dict(responses, orient='index')
     print(dfTemp)
     dfExport = dfExport.append(dfTemp, ignore_index=True)
     print(dfExport)
-dfExport.to_excel(writer, sheet_name="Sheet1")
+dfExport.to_excel(writer, sheet_name="Results")
 writer.save()
