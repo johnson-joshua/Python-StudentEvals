@@ -38,7 +38,7 @@ for file in files:
     sd = 0
     na = 0
     
-    #responses dictionary will hold a list for each student that took survey (Q 1-37)
+    #responses dictionary will hold a list for each student that took survey (Q1-Q34 & Q36-END)
     responses = {}
     #comments dictionary will hold a list for each student that took the survey (comments)
     comments = {}
@@ -54,7 +54,7 @@ for file in files:
     def makeCommentArrays(numResponses):
         count = int(1)
         for response in range(int(numResponses)):
-            comments['com'+str(count)] = [subject, classNum, section]
+            comments['com'+str(count)] = [subject, classNum, section] #adds class data to the first 3 columns of each list
             count+=1
     
     #Adds data to each list for Q1-Q34 & Q36-END
@@ -83,6 +83,7 @@ for file in files:
         comments['com'+str(count)].append(comment)
 
     #Q1 MUST be required. This logic will loop through Q1 and add up the number of responses for "Strongly Agree", "Agree", etc
+    #then create that number of lists to hold responses
     for index, row in df.iterrows():
         if(row['Q #'] == 1.0):
                curResp = row['# Responses']
@@ -94,10 +95,12 @@ for file in files:
     makeArrays(int(numStudents))
     makeCommentArrays(int(numStudents))
     
-    #Iterates through the original Excel report from D2L. Loops through Q1-Q34 & Q36-END and stores the number of responses for strongly agree, agree, etc.
+    #Iterates through the original Excel report from D2L. Loops through all responses and stores the number of responses for Strongly Agree, Agree, etc.
     #Once the loops hits the 'Not Applicable' number of responses, it calls the method to add the data for that question into a list
-    #
+    #Question 35 (comments question) will be added to comments list
     for index, row in df.iterrows():
+        #IF THE SURVEY CHANGES LENGTH - edit the two numbers below (line 104)
+        #THE <= 34.0 LINE WILL LOOP THROUGH THE FIRST 34 QUESTIONS, IT WILL SKIP 35 (COMMENT QUESTION) THEN CONTINUE LOOPING THROUGH Q36-END
         if(row['Q #'] <= 34.0 or row['Q #'] >= 36.0):
             if(row['Answer'] == 'Strongly Agree' or row['Answer'] == 'Very Satisfied' or row['Answer'] == 'A'):
                 sa = row['# Responses']
@@ -110,16 +113,16 @@ for file in files:
             if(row['Answer'] == 'Not Applicable' or row['Answer'] == 'F'):
                 na = row['# Responses']
                 addToArray(row['Q #'], sa, a, d, sd, na) #AddToArray is called once per question (1-34 && 36-END)
+        #IF THE NUMBER FOR THE COMMENT QUESTION CHANGES, CHANGE THE NUMBER BELOW TO THE NEW NUMBER FOR THE COMMENT QUESTION (line 117)
         elif(row['Q #'] == 35.0):
            addCommentsToArray(commentsIterator, row['Q #'], row['Q Text'], row['Answer'])
            commentsIterator+=1
-                 
-    
+    #dfTemp holds the responses for current class (data for 1 class)
     dfTemp = pd.DataFrame.from_dict(responses, orient='index', 
                                     columns=['A','B','C','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','36','37','38'])
-    dfTemp2 = pd.DataFrame.from_dict(comments, orient='index')
-    dfExport = dfExport.append(dfTemp, ignore_index=True)
-    dfComments = dfComments.append(dfTemp2, ignore_index=True)
-dfExport.to_excel(writer, sheet_name="Results")
+    dfTemp2 = pd.DataFrame.from_dict(comments, orient='index') #dfTemp2 holds the comments for current class (data for 1 class)
+    dfExport = dfExport.append(dfTemp, ignore_index=True)#responses for the current class are appended to dfExport. dfExport holds ALL class data
+    dfComments = dfComments.append(dfTemp2, ignore_index=True)#comments for the current class are appended to dfComments. dfComments holds ALL class data
+dfExport.to_excel(writer, sheet_name="Results") #Results worksheet holds all responses for Q1-Q34 & Q36-END
 dfComments.to_excel(writer, sheet_name="Comments") #New worksheet holds all comments
 writer.save()
